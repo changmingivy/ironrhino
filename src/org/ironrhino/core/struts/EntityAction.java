@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.views.freemarker.FreemarkerManager;
-import org.hibernate.Query;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.criterion.DetachedCriteria;
@@ -1706,10 +1706,10 @@ public class EntityAction<EN extends Persistable<?>> extends BaseAction {
 			StringBuilder hql = new StringBuilder("select ").append(propertyName).append(" from ")
 					.append(getEntityClass().getSimpleName()).append(" where ").append(propertyName)
 					.append(" like :keyword");
-			Query q = session.createQuery(hql.toString());
+			TypedQuery<String> q = session.createQuery(hql.toString(), String.class);
 			q.setParameter("keyword", keyword + "%");
 			q.setMaxResults(20);
-			return q.list();
+			return q.getResultList();
 		});
 		return JSON;
 	}
